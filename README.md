@@ -4,8 +4,8 @@ A polished React + TypeScript calendar dashboard for exploring fake workforce ro
 
 ## Live Demo
 
-- Live Demo: Coming soon
-- GitHub Repo: Coming soon
+- Live Demo: https://workforce-calendar-ui-lab.vercel.app
+- GitHub Repo: https://github.com/N-Mangla/workforce-calendar-ui-lab
 
 ## Why I Built This
 
