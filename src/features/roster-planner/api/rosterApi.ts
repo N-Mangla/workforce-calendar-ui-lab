@@ -14,8 +14,18 @@ export async function getRosterByRange(params: RosterFiltersApiParams): Promise<
     throw new Error("Mock roster API failed. Use this to test retry and error UX.");
   }
 
-  const start = new Date(params.startDate);
-  const end = new Date(params.endDate);
+  // The API range is UTC instants [start, end). Generate synthetic roster
+  // calendar dates in the requested zone, not the machine/browser timezone.
+  const timeZone = params.timeZoneId ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const zoneDate = (instant: Date) => {
+    const parts = new Intl.DateTimeFormat("en-GB", {
+      timeZone, year: "numeric", month: "2-digit", day: "2-digit",
+    }).formatToParts(instant);
+    const part = (type: string) => Number(parts.find((item) => item.type === type)?.value);
+    return new Date(part("year"), part("month") - 1, part("day"), 12);
+  };
+  const start = zoneDate(new Date(params.startDate));
+  const end = zoneDate(new Date(new Date(params.endDate).getTime() - 1));
 
   const result = buildMockRosterDays(start, end)
     .filter((day) => !params.teamId || params.teamId === "all" || day.teamId === params.teamId)
