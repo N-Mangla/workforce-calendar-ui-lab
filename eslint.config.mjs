@@ -1,5 +1,6 @@
 import { defineConfig } from "eslint/config";
 import reactHooks from "eslint-plugin-react-hooks";
+import tsParser from "@typescript-eslint/parser";
 
 export default defineConfig([
   {
@@ -10,6 +11,7 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
+      parser: tsParser,
       parserOptions: {
         ecmaFeatures: { jsx: true },
       },
