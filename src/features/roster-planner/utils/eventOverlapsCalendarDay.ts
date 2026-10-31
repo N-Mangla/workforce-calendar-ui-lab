@@ -10,7 +10,7 @@ import type { CalendarEvent } from "../types/calendarEvent.types";
  * Intervals are end-exclusive: midnight end times belong to the preceding day.
  */
 export function eventOverlapsCalendarDay(
-  event: Pick<CalendarEvent, "startDate" | "endDate" | "allDay">,
+  event: Pick<CalendarEvent, "startDate" | "endDate"> & Partial<Pick<CalendarEvent, "allDay">>,
   day: Date,
   timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone,
 ): boolean {
