@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { useDialogKeyboard } from "../hooks/useDialogKeyboard";
 import { Badge } from "../../../shared/components/Badge";
 import { formatTimeInZone } from "../utils/dateTime";
 import { useRosterFiltersStore } from "../store/rosterFiltersStore";
@@ -11,11 +12,12 @@ interface EventDetailsModalProps {
 
 export function EventDetailsModal({ event, onClose }: EventDetailsModalProps) {
   const { timeZoneId } = useRosterFiltersStore();
+  const dialogRef = useDialogKeyboard<HTMLDivElement>(event !== null, onClose);
 
   if (!event) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4" role="dialog" aria-modal="true" aria-labelledby="event-details-title">
+    <div ref={dialogRef} tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4" role="dialog" aria-modal="true" aria-labelledby="event-details-title">
       <div className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-soft">
         <div className="flex items-start justify-between gap-4">
           <div>

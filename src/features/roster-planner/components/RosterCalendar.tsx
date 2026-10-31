@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { useState } from "react";
 import { X } from "lucide-react";
+import { useDialogKeyboard } from "../hooks/useDialogKeyboard";
 import { useRosterFiltersStore } from "../store/rosterFiltersStore";
 import { formatDateKey, getVisibleDays } from "../utils/dateTime";
 import { eventOverlapsCalendarDay } from "../utils/eventOverlapsCalendarDay";
@@ -94,10 +95,11 @@ function DayEventsModal({
   onClose: () => void;
   onEventSelect: (event: CalendarEvent) => void;
 }) {
+  const dialogRef = useDialogKeyboard<HTMLDivElement>(day !== null, onClose);
   if (!day) return null;
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/40 p-4" role="dialog" aria-modal="true" aria-labelledby="day-events-title">
+    <div ref={dialogRef} tabIndex={-1} className="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/40 p-4" role="dialog" aria-modal="true" aria-labelledby="day-events-title">
       <div className="max-h-[85vh] w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-soft">
         <div className="flex items-start justify-between gap-4 border-b border-slate-200 p-5">
           <div>
