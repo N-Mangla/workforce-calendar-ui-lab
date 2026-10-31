@@ -34,7 +34,10 @@ export function CalendarPage() {
   // Never render a previous range's data under the newly selected date heading.
   const isWaitingForRange = !isCalendarRangeCurrent(range, debouncedRange);
   const isFetchingRange = isWaitingForRange || rosterQuery.isFetching;
-  const events = isWaitingForRange ? [] : (rosterQuery.data ?? []);
+  const events = useMemo(
+    () => (isWaitingForRange ? [] : (rosterQuery.data ?? [])),
+    [isWaitingForRange, rosterQuery.data],
+  );
   const metrics = useMemo(() => {
     const resources = new Set(events.map((event) => event.resourceId));
     const leaveOrNonWorking = events.filter((event) => event.isLeave || event.isNonWorking || event.kind === "holiday").length;
