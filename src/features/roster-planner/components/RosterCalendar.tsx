@@ -16,18 +16,18 @@ interface RosterCalendarProps {
 }
 
 export function RosterCalendar({ range, events, onEventSelect }: RosterCalendarProps) {
-  const { viewMode } = useRosterFiltersStore();
+  const { viewMode, timeZoneId } = useRosterFiltersStore();
   const [expandedDay, setExpandedDay] = useState<{ date: Date; events: CalendarEvent[] } | null>(null);
   const visibleDays = getVisibleDays(range);
 
   if (viewMode === "day") {
-    return <DayCalendar day={visibleDays[0]} events={events} onEventSelect={onEventSelect} />;
+    return <DayCalendar day={visibleDays[0]} events={events} timeZoneId={timeZoneId} onEventSelect={onEventSelect} />;
   }
 
   return (
     <div className={`grid overflow-hidden rounded-2xl border border-slate-200 ${viewMode === "month" ? "grid-cols-1 md:grid-cols-7" : "grid-cols-1 md:grid-cols-7"}`}>
       {visibleDays.map((day) => {
-        const dayEvents = events.filter((event) => eventOverlapsCalendarDay(event, day));
+        const dayEvents = events.filter((event) => eventOverlapsCalendarDay(event, day, timeZoneId));
         const visibleEvents = viewMode === "month" ? dayEvents.slice(0, 3) : dayEvents;
         const remainingCount = dayEvents.length - visibleEvents.length;
 
@@ -69,8 +69,8 @@ export function RosterCalendar({ range, events, onEventSelect }: RosterCalendarP
   );
 }
 
-function DayCalendar({ day, events, onEventSelect }: { day: Date; events: CalendarEvent[]; onEventSelect: (event: CalendarEvent) => void }) {
-  const dayEvents = events.filter((event) => eventOverlapsCalendarDay(event, day));
+function DayCalendar({ day, events, timeZoneId, onEventSelect }: { day: Date; events: CalendarEvent[]; timeZoneId: string; onEventSelect: (event: CalendarEvent) => void }) {
+  const dayEvents = events.filter((event) => eventOverlapsCalendarDay(event, day, timeZoneId));
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4">
