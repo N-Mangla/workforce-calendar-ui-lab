@@ -2,7 +2,8 @@ import { format } from "date-fns";
 import { useState } from "react";
 import { X } from "lucide-react";
 import { useRosterFiltersStore } from "../store/rosterFiltersStore";
-import { formatDateKey, getVisibleDays, isSameCalendarDate } from "../utils/dateTime";
+import { formatDateKey, getVisibleDays } from "../utils/dateTime";
+import { eventOverlapsCalendarDay } from "../utils/eventOverlapsCalendarDay";
 import { CalendarEventCard } from "./CalendarEventCard";
 import type { CalendarEvent, CalendarRange } from "../types/calendarEvent.types";
 
@@ -25,7 +26,7 @@ export function RosterCalendar({ range, events, onEventSelect }: RosterCalendarP
   return (
     <div className={`grid overflow-hidden rounded-2xl border border-slate-200 ${viewMode === "month" ? "grid-cols-1 md:grid-cols-7" : "grid-cols-1 md:grid-cols-7"}`}>
       {visibleDays.map((day) => {
-        const dayEvents = events.filter((event) => isSameCalendarDate(event.startDate, day));
+        const dayEvents = events.filter((event) => eventOverlapsCalendarDay(event, day));
         const visibleEvents = viewMode === "month" ? dayEvents.slice(0, 3) : dayEvents;
         const remainingCount = dayEvents.length - visibleEvents.length;
 
@@ -68,7 +69,7 @@ export function RosterCalendar({ range, events, onEventSelect }: RosterCalendarP
 }
 
 function DayCalendar({ day, events, onEventSelect }: { day: Date; events: CalendarEvent[]; onEventSelect: (event: CalendarEvent) => void }) {
-  const dayEvents = events.filter((event) => isSameCalendarDate(event.startDate, day));
+  const dayEvents = events.filter((event) => eventOverlapsCalendarDay(event, day));
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4">
