@@ -2,7 +2,8 @@ import { format } from "date-fns";
 import { useState } from "react";
 import { X } from "lucide-react";
 import { useRosterFiltersStore } from "../store/rosterFiltersStore";
-import { formatDateKey, getVisibleDays, eventOverlapsCalendarDay } from "../utils/dateTime";
+import { formatDateKey, getVisibleDays } from "../utils/dateTime";
+import { eventOverlapsCalendarDay } from "../utils/eventOverlapsCalendarDay";
 import { CalendarEventCard } from "./CalendarEventCard";
 import type { CalendarEvent, CalendarRange } from "../types/calendarEvent.types";
 
