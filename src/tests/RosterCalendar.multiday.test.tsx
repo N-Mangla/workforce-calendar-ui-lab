@@ -43,7 +43,8 @@ describe("RosterCalendar multi-day visibility", () => {
     expect(screen.getAllByText("Overnight support shift")).toHaveLength(2);
   });
 
-  it("shows an event ending at midnight only in the preceding day", () => {
+  it("shows an event ending at midnight only in the preceding day in UTC", () => {
+    useRosterFiltersStore.setState({ timeZoneId: "UTC" });
     render(
       <RosterCalendar
         anchorDate={new Date(2026, 9, 31)}
