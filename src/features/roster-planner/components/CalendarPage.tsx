@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { CalendarDays, Clock3, Moon, Users } from "lucide-react";
 import { getCalendarRange, getNextAnchorDate, getPreviousAnchorDate, getRangeLabel } from "../utils/dateTime";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
+import { isCalendarRangeCurrent } from "../utils/isCalendarRangeCurrent";
 import { useRosterEvents } from "../hooks/useRosterEvents";
 import { useRosterFiltersStore } from "../store/rosterFiltersStore";
 import { CalendarToolbar } from "./CalendarToolbar";
@@ -29,7 +30,11 @@ export function CalendarPage() {
     shouldFail: simulateError,
   });
 
-  const events = rosterQuery.data ?? [];
+  // The visible calendar changes immediately; API requests follow the debounced range.
+  // Never render a previous range's data under the newly selected date heading.
+  const isWaitingForRange = !isCalendarRangeCurrent(range, debouncedRange);
+  const isFetchingRange = isWaitingForRange || rosterQuery.isFetching;
+  const events = isWaitingForRange ? [] : (rosterQuery.data ?? []);
   const metrics = useMemo(() => {
     const resources = new Set(events.map((event) => event.resourceId));
     const leaveOrNonWorking = events.filter((event) => event.isLeave || event.isNonWorking || event.kind === "holiday").length;
@@ -94,15 +99,15 @@ export function CalendarPage() {
 
         <RosterLegend />
 
-        {rosterQuery.isError ? (
+        {rosterQuery.isError && !isWaitingForRange ? (
           <ErrorState
             message="The mock roster service returned an error. Retry to restore the calendar view."
             onRetry={() => void rosterQuery.refetch()}
           />
         ) : (
           <div className="relative rounded-3xl border border-slate-200 bg-white p-4 shadow-soft">
-            {rosterQuery.isFetching ? <LoadingOverlay /> : null}
-            {events.length === 0 && !rosterQuery.isFetching ? (
+            {isFetchingRange ? <LoadingOverlay /> : null}
+            {events.length === 0 && !isFetchingRange ? (
               <EmptyState onAction={resetFilters} />
             ) : (
               <RosterCalendar
