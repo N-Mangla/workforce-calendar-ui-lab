@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, fix/calendar-range-data-consistency]
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
