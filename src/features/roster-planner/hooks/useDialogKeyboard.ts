@@ -24,7 +24,7 @@ export function useDialogKeyboard<T extends HTMLElement>(
     const focusableSelector = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
     const getFocusable = () => Array.from(dialog.querySelectorAll<HTMLElement>(focusableSelector))
-      .filter((element) => element.getClientRects().length > 0 || element.getAttribute("data-focusable") === "true");
+      .filter((element) => !element.hidden && element.getAttribute("aria-hidden") !== "true");
 
     // The close button is the first interactive control in both dialogs.
     // Fallback to the dialog container if no interactive element is available.
