@@ -52,6 +52,7 @@ export type WorkType = "Support" | "Training" | "Coaching" | "Admin" | "Break" |
 export interface RosterFiltersApiParams {
   startDate: string;
   endDate: string;
+  timeZoneId?: string;
   teamId?: string;
   activityType?: WorkType | "all";
   shouldFail?: boolean;
