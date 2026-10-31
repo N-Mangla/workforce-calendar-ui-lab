@@ -7,6 +7,7 @@ import type { WorkType } from "../types/rosterApi.types";
 interface UseRosterEventsParams {
   startDate: string;
   endDate: string;
+  timeZoneId: string;
   teamId: string;
   activityType: WorkType | "all";
   shouldFail: boolean;
@@ -25,6 +26,7 @@ export function useRosterEvents(params: UseRosterEventsParams) {
       const response = await getRosterByRange({
         startDate: params.startDate,
         endDate: params.endDate,
+        timeZoneId: params.timeZoneId,
         teamId: params.teamId,
         activityType: params.activityType,
         shouldFail: params.shouldFail,

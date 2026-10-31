@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { CalendarDays, Clock3, Moon, Users } from "lucide-react";
 import { getCalendarRange, getNextAnchorDate, getPreviousAnchorDate, getRangeLabel } from "../utils/dateTime";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
+import { getZonedQueryRange, todayInZone } from "../utils/zonedQueryRange";
 import { isCalendarRangeCurrent } from "../utils/isCalendarRangeCurrent";
 import { useRosterEvents } from "../hooks/useRosterEvents";
 import { useRosterFiltersStore } from "../store/rosterFiltersStore";
@@ -15,16 +16,18 @@ import { EmptyState } from "../../../shared/components/EmptyState";
 import type { CalendarEvent } from "../types/calendarEvent.types";
 
 export function CalendarPage() {
-  const [anchorDate, setAnchorDate] = useState(() => new Date());
+  const [anchorDate, setAnchorDate] = useState(() => todayInZone(useRosterFiltersStore.getState().timeZoneId));
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
-  const { viewMode, selectedTeamId, activityType, simulateError, resetFilters } = useRosterFiltersStore();
+  const { viewMode, selectedTeamId, activityType, timeZoneId, simulateError, resetFilters } = useRosterFiltersStore();
 
   const range = useMemo(() => getCalendarRange(anchorDate, viewMode), [anchorDate, viewMode]);
   const debouncedRange = useDebouncedValue(range, 250);
+  const queryBounds = getZonedQueryRange(debouncedRange, timeZoneId);
 
   const rosterQuery = useRosterEvents({
-    startDate: debouncedRange.start.toISOString(),
-    endDate: debouncedRange.end.toISOString(),
+    startDate: queryBounds.startDate,
+    endDate: queryBounds.endDate,
+    timeZoneId,
     teamId: selectedTeamId,
     activityType,
     shouldFail: simulateError,
@@ -95,7 +98,7 @@ export function CalendarPage() {
 
         <CalendarToolbar
           anchorDate={anchorDate}
-          onToday={() => setAnchorDate(new Date())}
+          onToday={() => setAnchorDate(todayInZone(timeZoneId))}
           onPrevious={() => setAnchorDate((current) => getPreviousAnchorDate(current, viewMode))}
           onNext={() => setAnchorDate((current) => getNextAnchorDate(current, viewMode))}
         />
