@@ -27,6 +27,7 @@ export function CalendarPage() {
   const rosterQuery = useRosterEvents({
     startDate: queryBounds.startDate,
     endDate: queryBounds.endDate,
+    timeZoneId,
     teamId: selectedTeamId,
     activityType,
     shouldFail: simulateError,
