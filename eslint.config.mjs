@@ -7,7 +7,7 @@ export default defineConfig([
     ignores: ["dist/**", "node_modules/**", "coverage/**", "*.tsbuildinfo"],
   },
   {
-    files: ["src/**/*.{ts,tsx}"],
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
